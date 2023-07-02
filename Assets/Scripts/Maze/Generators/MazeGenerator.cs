@@ -7,6 +7,6 @@ namespace Nox7atra.Mazes.Generators
 {
     public abstract class MazeGenerator
     {
-        public abstract W4Maze Generate(int width, int height);
+        public abstract W4Maze Generate(int width, int height, int CellSize, int seed);
     }
 }

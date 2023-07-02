@@ -7,7 +7,7 @@ namespace Nox7atra.Mazes
 {
     public class W4Maze : Maze<W4Cell>
     {
-        public W4Maze(int width, int height) : base(width, height)
+        public W4Maze(int width, int height, int cellSize) : base(width, height, cellSize)
         {
             _Cells = new List<W4Cell>(width * height);
             CreateCells();

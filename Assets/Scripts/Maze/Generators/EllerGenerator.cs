@@ -4,9 +4,11 @@ namespace Nox7atra.Mazes.Generators
 {
     public class EllerGenerator : MazeGenerator
     {
-        public override W4Maze Generate(int width, int height)
+        private System.Random _rand;
+        public override W4Maze Generate(int width, int height, int cellSize, int seed)
         {
-            var eulerMaze = new W4Maze(width, height);
+            _rand = seed == 0 ? new System.Random() : new System.Random(seed);
+            var eulerMaze = new W4Maze(width, height, cellSize);
             for (int i = 0; i < eulerMaze.RowCount - 1; i++)
             {
                 CreateRow(eulerMaze, i);
@@ -23,7 +25,7 @@ namespace Nox7atra.Mazes.Generators
                 var nextCell = maze.GetCell(i + 1, rowNum);
                 if (cell.Set != nextCell.Set)
                 {
-                    if (UnityEngine.Random.Range(0, 2) > 0)
+                    if (_rand.NextDouble() > 0.5f)
                     {
                         RemoveHorizonWallBetweenCells(
                             maze,
@@ -55,7 +57,7 @@ namespace Nox7atra.Mazes.Generators
                 }
                 else
                 {
-                    removeVertical = Random.Range(0, 2) > 0;
+                    removeVertical = _rand.NextDouble() > 0.5f;
                     if (removeVertical)
                     {
                         RemoveVerticalWall(cell, topCell);
@@ -76,7 +78,7 @@ namespace Nox7atra.Mazes.Generators
             }
             else
             {
-                if (isAddedVertical ? Random.Range(0, 2) > 0 : true)
+                if (isAddedVertical ? _rand.NextDouble() > 0.5f : true)
                 {
                     RemoveVerticalWall(lastCell, topCell);
                 }

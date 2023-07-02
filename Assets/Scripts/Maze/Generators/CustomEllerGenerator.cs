@@ -1,32 +1,30 @@
 ﻿using Nox7atra.Mazes;
 using Nox7atra.Mazes.Generators;
 
-public class RandomEllerGenerator : EllerGenerator
+public class CustomEllerGenerator : EllerGenerator
 {
-    private readonly float _wallsValue;
-    private readonly int _seed;
+    private readonly float _wallOccupancy;
     private System.Random _rand;
-    public RandomEllerGenerator(int seed, float wallsvalue)
+    public CustomEllerGenerator(float wallOccupancy)
     {
-        _seed = seed;
-        _wallsValue = wallsvalue;
-        _rand = new System.Random(_seed);
+        _wallOccupancy = wallOccupancy;
     }
 
-    public override W4Maze Generate(int width, int height)
+    public override W4Maze Generate(int width, int height, int cellSize, int seed)
     {
-        var eulerMaze = base.Generate(width, height);
+        _rand = seed == 0 ? new System.Random() : new System.Random(seed);
+        var eulerMaze = base.Generate(width, height, cellSize, seed);
         RandomRemoveCells(eulerMaze);
         return eulerMaze;
     }
 
     private void RandomRemoveCells(W4Maze maze)
     {
-        for (int j = 0; j < maze.RowCount; j++)
+        for (int j = 0; j < maze.ColumnCount; j++)
         {
-            for (int i = 0; i < maze.ColumnCount; i++)
+            for (int i = 0; i < maze.RowCount; i++)
             {
-                if (_rand.NextDouble() > _wallsValue)
+                if (_rand.NextDouble() > _wallOccupancy)
                 {
                     var cells = maze.GetCell(j, i);
 
@@ -35,15 +33,13 @@ public class RandomEllerGenerator : EllerGenerator
                     cells.LeftWall = false;
                     cells.RightWall = false;
 
-                    SetCellsNeighbors(j, i, maze.RowCount, maze.ColumnCount, maze);
-
-
-                    if (i == 0) cells.BotWall = true;
-                    if (i == maze.ColumnCount - 1) cells.TopWall = true;
+                    SetCellsNeighbors(j, i, maze.ColumnCount, maze.RowCount, maze);
 
                     if (j == 0) cells.LeftWall = true;
-                    if (j == maze.RowCount - 1) cells.RightWall = true;
+                    if (j == maze.ColumnCount - 1) cells.RightWall = true;
 
+                    if (i == 0) cells.BotWall = true;
+                    if (i == maze.RowCount - 1) cells.TopWall = true;
                 }
             }
         }

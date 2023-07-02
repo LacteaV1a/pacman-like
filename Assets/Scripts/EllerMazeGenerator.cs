@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeGenerator : MonoBehaviour
+public class EllerMazeGenerator : MonoBehaviour
 {
-    [SerializeField] private MazeVisualizer _mazeVisualizer;
     [SerializeField] private int _cols;
     [SerializeField] private int _rows;
     [SerializeField] private int _seed;
@@ -46,8 +45,6 @@ public class MazeGenerator : MonoBehaviour
         }
             Debug.Log(line);
 
-        _mazeVisualizer.CreateHorizontalWalls(_horizontallWalls, _rows, _cols);
-        _mazeVisualizer.CreateVerticalWalls(_verticalWalls, _rows, _cols);
     }
 
     private void FillEmptyValue()

@@ -24,8 +24,13 @@ namespace Nox7atra.Mazes
                 return _WallEdges;
             }
         }
+
+        private W4Maze _maze;
+        public List<MazeGraphCell> Cells => _Cells;
+        public W4Maze Maze => _maze;
         public MazeGraph(W4Maze maze, bool isSimplify)
         {
+            _maze = maze;
             _Cells = new List<MazeGraphCell>(maze.RowCount * maze.ColumnCount);
             _PathEdges = new List<Edge>();
             _WallEdges = new List<Edge>();
@@ -136,6 +141,12 @@ namespace Nox7atra.Mazes
                 }
             }
 
+        }
+
+        public MazeGraphCell GetGraphCells(int x, int y)
+        {
+            int index = x + y * _maze.ColumnCount;
+            return Cells[index];
         }
         private void ProcessWallEdges()
         {
