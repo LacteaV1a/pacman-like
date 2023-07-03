@@ -12,6 +12,15 @@ namespace Nox7atra.Mazes
             _Cells = new List<W4Cell>(width * height);
             CreateCells();
         }
+
+        public Vector2Int GetRandomCoord()
+        {
+            var rand = new System.Random();
+            var x = rand.Next(0, ColumnCount - 1);
+            var y = rand.Next(0, RowCount - 1);
+
+            return new Vector2Int(x, y);
+        }
         private void CreateCells()
         {
             for(int i = 0; i < _Cells.Capacity; i++)

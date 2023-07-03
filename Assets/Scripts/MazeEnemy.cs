@@ -10,13 +10,14 @@ public class MazeEnemy : MonoBehaviour
     private List<MazeGraphCell> _shortestPath;
     private int _currentPathIndex = 0;
     private MazePathFinder _mazePathFinder;
-    private MazePlayer _player;
+    private Transform _target;
 
     private float _timer;
 
-    public void Construct(MazePlayer player, MazeGraph graph, MazePathFinder mazePathFinder)
+    private bool _isChasing;
+
+    public void Construct(MazeGraph graph, MazePathFinder mazePathFinder)
     {
-        _player = player;
         _mazeGraph = graph;
         _mazePathFinder = mazePathFinder;
         _timePathUpdateSec += Random.Range(0, 10) / 10f;
@@ -24,8 +25,8 @@ public class MazeEnemy : MonoBehaviour
 
     private void UpdatePath()
     {
-        var playerCoord = _player.GetCoord();
-        var endCell = _mazeGraph.GetGraphCells(playerCoord.x, playerCoord.y);
+        var targetPos = _mazeGraph.Maze.GetXY(new Vector2(_target.position.x, _target.position.z));
+        var endCell = _mazeGraph.GetGraphCells(targetPos.x, targetPos.y);
 
         var pos = _mazeGraph.Maze.GetXY(new Vector2(transform.position.x, transform.position.z));
         var startCell = _mazeGraph.GetGraphCells(pos.x, pos.y);
@@ -36,7 +37,9 @@ public class MazeEnemy : MonoBehaviour
 
     private void Update()
     {
-        if (_shortestPath != null && _currentPathIndex < _shortestPath.Count)
+        if (_isChasing == false || _target == null || _shortestPath == null) return;
+
+        if (_currentPathIndex < _shortestPath.Count)
         {
             MazeGraphCell currentCell = _shortestPath[_currentPathIndex];
             Vector3 targetPosition = new Vector3(currentCell.Position.x, 0f, currentCell.Position.y);
@@ -59,6 +62,22 @@ public class MazeEnemy : MonoBehaviour
         }
     }
 
+    public void StartChasingTarget(Transform target)
+    {
+        _target = target;
+        _isChasing = true;
+        UpdatePath();
+    }
+
+    public void StopChasingTarget()
+    {
+        _isChasing = false;
+    }
+
+    public bool IsEnable()
+    {
+        return gameObject.activeSelf;
+    }
     public void SetPostion(float x, float z)
     {
         transform.position = new Vector3(x, 0, z);

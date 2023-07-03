@@ -16,4 +16,4 @@ MonoBehaviour:
   <CellsY>k__BackingField: 10
   <CellsSize>k__BackingField: 1
   <Seed>k__BackingField: 0
-  <WallOccupancy>k__BackingField: 0.9
+  <WallOccupancy>k__BackingField: 0.8

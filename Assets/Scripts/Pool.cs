@@ -2,7 +2,7 @@ using UnityEngine.Pool;
 
 public abstract class Pool<T> where T : class
 {
-    private IObjectPool<T> _objectPool;
+    private ObjectPool<T> _objectPool;
 
     public Pool(PoolConfig config)
     {
@@ -24,5 +24,10 @@ public abstract class Pool<T> where T : class
     public void Release(T item)
     {
         _objectPool.Release(item);
+    }
+
+    public void Dispose()
+    {
+        _objectPool.Dispose();
     }
 }

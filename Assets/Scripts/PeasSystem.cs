@@ -1,9 +1,10 @@
 ﻿using Nox7atra.Mazes;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PeasSystem : MonoBehaviour
+public class PeasSystem : GameSystem
 {
     [SerializeField] private PeaConfig _peaConfig;
     [SerializeField] private PoolConfig _poolConfig;
@@ -13,6 +14,7 @@ public class PeasSystem : MonoBehaviour
     private Grid<Pea> _peasedGrid;
     private bool _isActive;
     private bool _isInitialized;
+    private List<Pea> _peas = new();
 
     public void Initialize(MazePlayer player, W4Maze maze)
     {
@@ -30,7 +32,7 @@ public class PeasSystem : MonoBehaviour
         _isActive = true;
         _player.Moved += OnPlayerMoved;
 
-        ArrangePeas();
+        SpawnPeas();
     }
 
     private void OnPlayerMoved(int x, int y)
@@ -40,7 +42,10 @@ public class PeasSystem : MonoBehaviour
         {
             _peasedGrid.SetValue(x, y, null);
             _peaPool.Release(pea);
-            StartCoroutine(TimerRoutine(_peaConfig.TimeSpawnSec, SetPea));
+            StartCoroutine(TimerRoutine(_peaConfig.TimeSpawnSec, () => {
+                if(_isActive)
+                    SetPea();
+            }));
         }
     }
 
@@ -50,8 +55,9 @@ public class PeasSystem : MonoBehaviour
         callback?.Invoke();
     }
 
-    private void ArrangePeas()
+    private void SpawnPeas()
     {
+        _peas.Clear();
         for (int i = 0; i < _poolConfig.DefaultCapacity; i++)
         {
             SetPea();
@@ -60,7 +66,7 @@ public class PeasSystem : MonoBehaviour
 
     private void SetPea()
     {
-        var coord = GetRandomCoord();
+        var coord = _maze.GetRandomCoord();
         if (_peasedGrid.GetValue(coord.x, coord.y) == null)
         {
             VisualizePeas(coord.x, coord.y);
@@ -71,16 +77,6 @@ public class PeasSystem : MonoBehaviour
         }
 
     }
-
-    private Vector2Int GetRandomCoord()
-    {
-        var rand = new System.Random();
-        var x = rand.Next(0, _maze.ColumnCount - 1);
-        var y = rand.Next(0, _maze.RowCount - 1);
-
-        return new Vector2Int(x, y);
-    }
-
     private void VisualizePeas(int x, int y)
     {
         var pea = _peaPool.Get();
@@ -89,15 +85,33 @@ public class PeasSystem : MonoBehaviour
         var pos = _maze.GetCellWorldPosition(x, y);
 
         pea.SetPostion(pos.x,pos.y);
+        if (_peas.Contains(pea) == false)
+            _peas.Add(pea);
     }
 
 
     public void StopSystem()
     {
         if (_isActive == false) return;
-        _player.Moved -= OnPlayerMoved;
 
         _isActive = false;
+        foreach (var pea in _peas)
+        {
+            _peaPool.Release(pea);
+        }
+
+        _player.Moved -= OnPlayerMoved;
+
         _peasedGrid.Clear();
+    }
+
+    public override void OnFinishGame()
+    {
+        StopSystem();
+    }
+
+    public override void OnStartGame()
+    {
+        StartSystem();
     }
 }

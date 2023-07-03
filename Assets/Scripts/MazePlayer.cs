@@ -3,13 +3,14 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class MazePlayer : MonoBehaviour
+public class MazePlayer : GameSystem
 {
     [SerializeField] private float _timeToMove = 0.3f;
     [SerializeField] private float _yHeight = 0.5f;
     private W4Maze _maze;
     private Vector3 _movePoint;
     private bool _isMoving;
+    private bool _isActive;
 
     Coroutine routine;
     public event Action<int, int> Moved;
@@ -17,14 +18,12 @@ public class MazePlayer : MonoBehaviour
     public void Construct(W4Maze maze)
     {
         _maze = maze;
-        var pos = _maze.GetCellWorldPosition(0, 0);
-        transform.position = new Vector3(pos.x, _yHeight, pos.y);
         _movePoint = transform.position;
     }
 
     private void Update()
     {
-        if (_maze == null) return;
+        if (_maze == null || _isActive == false) return;
 
         float vert = Input.GetAxis("Vertical");
         float hor = Input.GetAxis("Horizontal");
@@ -42,6 +41,7 @@ public class MazePlayer : MonoBehaviour
         if ((hor > 0 && cell.RightWall == false) && _isMoving == false)
         {
             StartCoroutine(MoveRoutine(Vector3.right));
+            Move();
         }
 
         if ((hor < 0 && cell.LeftWall == false) && _isMoving == false)
@@ -58,9 +58,6 @@ public class MazePlayer : MonoBehaviour
         {
             StartCoroutine(MoveRoutine(Vector3.back));
         }
-
-
-
     }
 
     private IEnumerator MoveRoutine(Vector3 dir)
@@ -82,7 +79,7 @@ public class MazePlayer : MonoBehaviour
         transform.position = targetPos;
 
         var pos = GetCoord();
-        Moved.Invoke(pos.x, pos.y);
+        Moved?.Invoke(pos.x, pos.y);
 
 
         _isMoving = false;
@@ -99,5 +96,24 @@ public class MazePlayer : MonoBehaviour
         _movePoint = new Vector3(pos.x, _yHeight, pos.y);
         Moved.Invoke(x, z);
         Debug.Log("Move");
+    }
+
+    public void Move(Vector3 dir)
+    {
+        _movePoint = transform.position + dir * _maze.CellsSize;
+        Debug.Log("Move");
+    }
+
+    public override void OnFinishGame()
+    {
+        _isActive = false;
+    }
+
+    public override void OnStartGame()
+    {
+        var pos = _maze.GetCellWorldPosition(0, 0);
+        transform.position = new Vector3(pos.x, _yHeight, pos.y);
+
+        _isActive = true;
     }
 }

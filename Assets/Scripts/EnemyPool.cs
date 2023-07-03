@@ -4,12 +4,10 @@ using UnityEngine;
 public class EnemyPool : Pool<MazeEnemy>
 {
     private PoolConfig _poolConfig;
-    private MazePlayer _player;
     private MazePathFinder _mazePathFinder;
     private MazeGraph _mazeGraph;
-    public EnemyPool(MazePlayer player, MazePathFinder pathFinder, MazeGraph mazeGraph, PoolConfig poolConfig) : base(poolConfig)
+    public EnemyPool(MazePathFinder pathFinder, MazeGraph mazeGraph, PoolConfig poolConfig) : base(poolConfig)
     {
-        _player = player;
         _poolConfig = poolConfig;
         _mazePathFinder = pathFinder;
         _mazeGraph = mazeGraph;
@@ -18,7 +16,7 @@ public class EnemyPool : Pool<MazeEnemy>
     protected override MazeEnemy CreatePooledItem()
     {
         var enemy = (Object.Instantiate(_poolConfig.Prefab) as GameObject).GetComponent<MazeEnemy>();
-        enemy.Construct(_player, _mazeGraph, _mazePathFinder);
+        enemy.Construct(_mazeGraph, _mazePathFinder);
         return enemy;
     }
 
