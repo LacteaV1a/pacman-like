@@ -20,7 +20,7 @@ public class MazeEnemy : MonoBehaviour
     {
         _mazeGraph = graph;
         _mazePathFinder = mazePathFinder;
-        _timePathUpdateSec += Random.Range(0, 10) / 10f;
+        _timePathUpdateSec += Random.Range(0, 2) / 10f;
     }
 
     private void UpdatePath()
@@ -30,6 +30,11 @@ public class MazeEnemy : MonoBehaviour
 
         var pos = _mazeGraph.Maze.GetXY(new Vector2(transform.position.x, transform.position.z));
         var startCell = _mazeGraph.GetGraphCells(pos.x, pos.y);
+
+        if(_shortestPath != null && _currentPathIndex < _shortestPath.Count)
+        {
+            startCell = _shortestPath[_currentPathIndex];
+        }
 
         _shortestPath = _mazePathFinder.FindShortestPath(startCell, endCell);
         _currentPathIndex = 0;
@@ -72,6 +77,10 @@ public class MazeEnemy : MonoBehaviour
     public void StopChasingTarget()
     {
         _isChasing = false;
+        _shortestPath =null;
+        _currentPathIndex = 0;
+        _target = null;
+        _timer = 0;
     }
 
     public bool IsEnable()

@@ -13,11 +13,11 @@ namespace Nox7atra.Mazes
             CreateCells();
         }
 
-        public Vector2Int GetRandomCoord()
+        public Vector2Int GetRandomCoord(Vector2Int startIndex)
         {
             var rand = new System.Random();
-            var x = rand.Next(0, ColumnCount - 1);
-            var y = rand.Next(0, RowCount - 1);
+            var x = rand.Next(startIndex.x, ColumnCount - 1);
+            var y = rand.Next(startIndex.y, RowCount - 1);
 
             return new Vector2Int(x, y);
         }

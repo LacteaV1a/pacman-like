@@ -9,7 +9,7 @@ public class MazePlayer : GameSystem
     [SerializeField] private float _yHeight = 0.5f;
     private W4Maze _maze;
     private Vector3 _movePoint;
-    private bool _isMoving;
+    private bool _isMoved;
     private bool _isActive;
 
     Coroutine routine;
@@ -18,7 +18,6 @@ public class MazePlayer : GameSystem
     public void Construct(W4Maze maze)
     {
         _maze = maze;
-        _movePoint = transform.position;
     }
 
     private void Update()
@@ -33,36 +32,48 @@ public class MazePlayer : GameSystem
         var x = pos.x;
         var z = pos.y;
         W4Cell cell = _maze.GetCell(x, z);
+         
+        transform.position = Vector3.MoveTowards(transform.position, _movePoint, step);
 
-        //transform.position = Vector3.MoveTowards(transform.position, _movePoint, step);
-
-        //if (Vector3.Distance(transform.position, _movePoint) <= 0.1f)
-        //{
-        if ((hor > 0 && cell.RightWall == false) && _isMoving == false)
+        if (transform.position == _movePoint)
         {
-            StartCoroutine(MoveRoutine(Vector3.right));
-            Move();
-        }
+            if (hor > 0 && cell.RightWall == false)
+            {
+                //StartCoroutine(MoveRoutine(Vector3.right));
+                Move(Vector3.right);
+            }
 
-        if ((hor < 0 && cell.LeftWall == false) && _isMoving == false)
-        {
-            StartCoroutine(MoveRoutine(Vector3.left));
-        }
+            if (hor < 0 && cell.LeftWall == false)
+            {
+                //StartCoroutine(MoveRoutine(Vector3.left));
+                Move(Vector3.left);
+            }
 
-        if (vert > 0 && cell.TopWall == false && _isMoving == false)
-        {
-            StartCoroutine(MoveRoutine(Vector3.forward));
-        }
+            if (vert > 0 && cell.TopWall == false)
+            {
+                //StartCoroutine(MoveRoutine(Vector3.forward));
+                Move(Vector3.forward);
 
-        if (vert < 0 && cell.BotWall == false && _isMoving == false)
-        {
-            StartCoroutine(MoveRoutine(Vector3.back));
+            }
+
+            if (vert < 0 && cell.BotWall == false)
+            {
+                //StartCoroutine(MoveRoutine(Vector3.back));
+                Move(Vector3.back);
+            }
+
+            if(_isMoved == false)
+            {
+                _isMoved = true;
+                Moved.Invoke(pos.x, pos.y);
+            }
+
         }
     }
 
     private IEnumerator MoveRoutine(Vector3 dir)
     {
-        _isMoving = true;
+        _isMoved = true;
 
         float elapsedTime = 0;
 
@@ -82,7 +93,7 @@ public class MazePlayer : GameSystem
         Moved?.Invoke(pos.x, pos.y);
 
 
-        _isMoving = false;
+        _isMoved = false;
     }
 
     public Vector2Int GetCoord()
@@ -95,13 +106,12 @@ public class MazePlayer : GameSystem
         var pos = _maze.GetCellWorldPosition(x, z);
         _movePoint = new Vector3(pos.x, _yHeight, pos.y);
         Moved.Invoke(x, z);
-        Debug.Log("Move");
     }
 
     public void Move(Vector3 dir)
     {
         _movePoint = transform.position + dir * _maze.CellsSize;
-        Debug.Log("Move");
+        _isMoved = false;
     }
 
     public override void OnFinishGame()
@@ -113,6 +123,7 @@ public class MazePlayer : GameSystem
     {
         var pos = _maze.GetCellWorldPosition(0, 0);
         transform.position = new Vector3(pos.x, _yHeight, pos.y);
+        _movePoint = transform.position;
 
         _isActive = true;
     }

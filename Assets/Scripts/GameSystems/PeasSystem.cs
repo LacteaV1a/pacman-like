@@ -66,7 +66,7 @@ public class PeasSystem : GameSystem
 
     private void SetPea()
     {
-        var coord = _maze.GetRandomCoord();
+        var coord = _maze.GetRandomCoord(Vector2Int.zero);
         if (_peasedGrid.GetValue(coord.x, coord.y) == null)
         {
             VisualizePeas(coord.x, coord.y);

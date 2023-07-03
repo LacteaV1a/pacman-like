@@ -29,6 +29,7 @@ public class EnemySystem : GameSystem
     {
         foreach (var enemy in _enemys)
         {
+            enemy.StopChasingTarget();
             _enemyPool.Release(enemy);
         }
     }
@@ -44,7 +45,7 @@ public class EnemySystem : GameSystem
         for (int i = 0; i < _poolConfig.DefaultCapacity; i++)
         {
             var enemy = _enemyPool.Get();
-            var coord = _maze.GetRandomCoord();
+            var coord = _maze.GetRandomCoord(new Vector2Int(_maze.ColumnCount/2, _maze.RowCount/2));
             var pos = _maze.GetCellWorldPosition(coord.x, coord.y);
             enemy.SetPostion(pos.x, pos.y);
             enemy.StartChasingTarget(_player.transform);
