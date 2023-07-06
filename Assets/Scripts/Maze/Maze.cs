@@ -33,7 +33,7 @@ public abstract class Maze<T>
 
     public virtual Vector2 GetCellWorldPosition(int x, int y)
     {
-        return new Vector2(x + CellsSize*0.5f, y + CellsSize*0.5f);
+        return new Vector2(x * CellsSize + CellsSize*0.5f, y * CellsSize + CellsSize*0.5f);
     }
 
     public virtual Vector2Int GetXY(Vector2 WorldPosition)

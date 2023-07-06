@@ -15,6 +15,9 @@ public class PeasSystem : GameSystem
     private bool _isActive;
     private bool _isInitialized;
     private List<Pea> _peas = new();
+    private int _brakeCount = 10;
+    private int _brakeCounter;
+
 
     public void Initialize(MazePlayer player, W4Maze maze)
     {
@@ -66,15 +69,23 @@ public class PeasSystem : GameSystem
 
     private void SetPea()
     {
+        if (_brakeCounter > _brakeCount)
+        {
+            return;
+            //throw new Exception($"The size of the maze does not allow you to spawn {_poolConfig.DefaultCapacity} peas");
+        }
+
         var coord = _maze.GetRandomCoord(Vector2Int.zero);
         if (_peasedGrid.GetValue(coord.x, coord.y) == null)
         {
             VisualizePeas(coord.x, coord.y);
         }
-        else
+        else 
         {
+            _brakeCounter++;
             SetPea();
         }
+
 
     }
     private void VisualizePeas(int x, int y)
@@ -101,6 +112,7 @@ public class PeasSystem : GameSystem
         }
 
         _player.Moved -= OnPlayerMoved;
+        _brakeCounter = 0;
 
         _peasedGrid.Clear();
     }

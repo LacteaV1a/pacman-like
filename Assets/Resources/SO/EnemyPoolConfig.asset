@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: EnemyPoolConfig
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 3166353101709653054, guid: c2a9ffc92d2803749bfd602baf19bf3f, type: 3}
-  <DefaultCapacity>k__BackingField: 1
+  <DefaultCapacity>k__BackingField: 4
   <MaxInPool>k__BackingField: 10

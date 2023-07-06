@@ -69,9 +69,14 @@ namespace Nox7atra.Mazes.Generators
         }
         private void CheckLastVertical(W4Maze maze, int rowNum, bool isAddedVertical)
         {
-            W4Cell lastCell = maze.GetCell(maze.ColumnCount - 1, rowNum);
-            W4Cell preLastCell = maze.GetCell(maze.ColumnCount - 2, rowNum);
-            W4Cell topCell = maze.GetCell(maze.ColumnCount - 1, rowNum + 1);
+            var lastX = maze.ColumnCount - 1;
+            var preLastX = maze.ColumnCount - 2;
+
+            preLastX = preLastX < 0 ? 0 : preLastX;
+
+            W4Cell lastCell = maze.GetCell(lastX, rowNum);
+            W4Cell preLastCell = maze.GetCell(preLastX, rowNum);
+            W4Cell topCell = maze.GetCell(lastX, rowNum + 1);
             if (lastCell.Set != preLastCell.Set)
             {
                 RemoveVerticalWall(lastCell, topCell);

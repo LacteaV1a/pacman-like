@@ -37,6 +37,7 @@ public class MazeEnemy : MonoBehaviour
         }
 
         _shortestPath = _mazePathFinder.FindShortestPath(startCell, endCell);
+
         _currentPathIndex = 0;
     }
 

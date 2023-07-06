@@ -53,24 +53,29 @@ namespace Nox7atra.Mazes
                         maze.ColumnCount
                     );
 
+                    var cellSize = maze.CellsSize;
+                    var halfCell = maze.CellsSize * 0.5f;
+
                     _Cells[index].Position = new Vector2(
-                        i + 0.5f,
-                        j + 0.5f);
+                        i * cellSize + halfCell,
+                        j * cellSize + halfCell);
                     _Cells[index].CanBeSimplifiied
                         = (!cell.BotWall && !cell.TopWall
                         && cell.RightWall && cell.LeftWall)
                         || (cell.BotWall && cell.TopWall
                         && !cell.RightWall && !cell.LeftWall);
 
+
+
                     if (cell.BotWall)
                     {
                         var edge = new Edge();
                         edge.Begin = new Vector2(
-                            _Cells[index].Position.x - 0.5f,
-                            _Cells[index].Position.y - 0.5f);
+                            _Cells[index].Position.x - halfCell,
+                            _Cells[index].Position.y - halfCell);
                         edge.End = new Vector2(
-                            _Cells[index].Position.x + 0.5f,
-                            _Cells[index].Position.y - 0.5f);
+                            _Cells[index].Position.x + halfCell,
+                            _Cells[index].Position.y - halfCell);
                         if (_WallEdges.TrueForAll(x => x != edge))
                             _WallEdges.Add(edge);
                     }
@@ -78,11 +83,11 @@ namespace Nox7atra.Mazes
                     {
                         var edge = new Edge();
                         edge.Begin = new Vector2(
-                            _Cells[index].Position.x - 0.5f,
-                            _Cells[index].Position.y + 0.5f);
+                            _Cells[index].Position.x - halfCell,
+                            _Cells[index].Position.y + halfCell);
                         edge.End = new Vector2(
-                            _Cells[index].Position.x + 0.5f,
-                            _Cells[index].Position.y + 0.5f);
+                            _Cells[index].Position.x + halfCell,
+                            _Cells[index].Position.y + halfCell);
                         if (_WallEdges.TrueForAll(x => x != edge))
                             _WallEdges.Add(edge);
                     }
@@ -90,11 +95,11 @@ namespace Nox7atra.Mazes
                     {
                         var edge = new Edge();
                         edge.Begin = new Vector2(
-                            _Cells[index].Position.x - 0.5f,
-                            _Cells[index].Position.y - 0.5f);
+                            _Cells[index].Position.x - halfCell,
+                            _Cells[index].Position.y - halfCell);
                         edge.End = new Vector2(
-                            _Cells[index].Position.x - 0.5f,
-                            _Cells[index].Position.y + 0.5f);
+                            _Cells[index].Position.x - halfCell,
+                            _Cells[index].Position.y + halfCell);
                         if (_WallEdges.TrueForAll(x => x != edge))
                             _WallEdges.Add(edge);
                     }
@@ -102,11 +107,11 @@ namespace Nox7atra.Mazes
                     {
                         var edge = new Edge();
                         edge.Begin = new Vector2(
-                            _Cells[index].Position.x + 0.5f,
-                            _Cells[index].Position.y + 0.5f);
+                            _Cells[index].Position.x + halfCell,
+                            _Cells[index].Position.y + halfCell);
                         edge.End = new Vector2(
-                            _Cells[index].Position.x + 0.5f,
-                            _Cells[index].Position.y - 0.5f);
+                            _Cells[index].Position.x + halfCell,
+                            _Cells[index].Position.y - halfCell);
                         if (_WallEdges.TrueForAll(x => x != edge))
                             _WallEdges.Add(edge);
                     }
