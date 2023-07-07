@@ -150,6 +150,11 @@ namespace Nox7atra.Mazes
 
         public MazeGraphCell GetGraphCells(int x, int y)
         {
+            if (x < 0) x = 0;
+            if (x >= _maze.ColumnCount) x = _maze.ColumnCount - 1;
+            if (y < 0) y = 0;
+            if (y >= _maze.RowCount) y = _maze.RowCount - 1;
+
             int index = x + y * _maze.ColumnCount;
             return Cells[index];
         }
