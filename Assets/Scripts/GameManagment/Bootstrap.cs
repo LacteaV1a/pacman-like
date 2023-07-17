@@ -7,7 +7,7 @@ public class Bootstrap : MonoBehaviour
 {
     [SerializeField] private GameUI _gameUI;
     [SerializeField] private GameContext _gameContext;
-    [SerializeField] private MazeVisualizer _mazeVisualizer;
+    [SerializeField] private MazeVisualizeSystem _mazeVisualizer;
     [SerializeField] private LoseConditionSystem _loseConditionSystem;
     [SerializeField] private PeasSystem _peasSystem;
     [SerializeField] private EnemySystem _enemySystem;
