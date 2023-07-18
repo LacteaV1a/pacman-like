@@ -329,6 +329,7 @@ MonoBehaviour:
   _mazeConfig: {fileID: 11400000, guid: c3a23bef7c21fdd49b1771e66c1d1bd3, type: 2}
   _mazeViewConfig: {fileID: 11400000, guid: 868a95d8a40f50741b9e1ff83eaf1109, type: 2}
   _playerConfig: {fileID: 11400000, guid: 2835f594c38688e4d96ec31b8b2c3971, type: 2}
+  _peaPoolConfig: {fileID: 11400000, guid: 85eb6db888ce5364b965c92ebf3bfb08, type: 2}
 --- !u!1 &807145474
 GameObject:
   m_ObjectHideFlags: 0

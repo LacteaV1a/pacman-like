@@ -3,6 +3,7 @@
 public class PeaPool : Pool<Pea>
 {
     private PoolConfig _poolConfig;
+    public PoolConfig Config => _poolConfig;
     public PeaPool(PoolConfig poolConfig) : base(poolConfig)
     {
         _poolConfig = poolConfig;
