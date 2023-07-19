@@ -57,6 +57,15 @@ public sealed class PlayerMovementInMazeSystem : IEcsInitSystem, IEcsRunSystem
             if (worldObj.Transform.position == _movePoint)
             {
 
+                if (_isMoved == false)
+                {
+                    _isMoved = true;
+                    _movedPool.Add(i);
+                    ref var coord = ref _mazeCoord.Get(i);
+                    coord.Value = pos;
+                }
+
+
                 if (player.Direction.x > 0 && cell.RightWall == false)
                 {
                     Move(worldObj.Transform, Vector3.right);
@@ -81,13 +90,6 @@ public sealed class PlayerMovementInMazeSystem : IEcsInitSystem, IEcsRunSystem
                     _movedPool.Del(i);
                 }
 
-                if(_isMoved == false)
-                {
-                    _isMoved = true;
-                    _movedPool.Add(i);
-                    ref var coord = ref _mazeCoord.Get(i);
-                    coord.Value = pos;
-                }
 
             }
         }
@@ -97,6 +99,7 @@ public sealed class PlayerMovementInMazeSystem : IEcsInitSystem, IEcsRunSystem
     {
         _movePoint = transform.position + dir * _maze.CellsSize;
         _isMoved = false;
+
     }
 }
 

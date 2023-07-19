@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 804089681397989054, guid: 617b84c87c18b0648842afa8343a5528, type: 3}
   <SpawnMazeCoord>k__BackingField: {x: 0, y: 0}
-  <Speed>k__BackingField: 2
+  <Speed>k__BackingField: 1
   <Ypos>k__BackingField: 0.5

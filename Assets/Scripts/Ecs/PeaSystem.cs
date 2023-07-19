@@ -25,14 +25,15 @@ public sealed class PeaSystem : IEcsInitSystem, IEcsRunSystem
 
     public void Run(IEcsSystems systems)
     {
+        _peaFilter = systems.GetWorld().Filter<PeaComponent>().Inc<GrabedMarker>().End();
         foreach (var item in _peaFilter)
         {
             ref var pea = ref _peaPool.Get(item);
             _grabedPool.Del(item);
-            Debug.Log(pea.View);
+            //Debug.Log(item);
             //_peaViewPool.Release(pea.View);
         }
-        Debug.Log("END");
+        //Debug.Log("END");
 
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PeaPoolConfig
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 7997682946583937688, guid: e1b52f4293ada8a49bfed8b515c316fd, type: 3}
-  <DefaultCapacity>k__BackingField: 20
+  <DefaultCapacity>k__BackingField: 1
   <MaxInPool>k__BackingField: 30

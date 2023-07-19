@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03178cc7e0358414694af93cc5100792, type: 3}
   m_Name: MazeConfig
   m_EditorClassIdentifier: 
-  <CellsX>k__BackingField: 10
-  <CellsY>k__BackingField: 10
+  <CellsX>k__BackingField: 2
+  <CellsY>k__BackingField: 2
   <CellsSize>k__BackingField: 1
   <Seed>k__BackingField: 5555
-  <WallOccupancy>k__BackingField: 1
+  <WallOccupancy>k__BackingField: 0
