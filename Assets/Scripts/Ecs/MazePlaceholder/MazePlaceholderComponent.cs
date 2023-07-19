@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public struct MazeRandomPlaceholderComponent
+public struct MazePlaceholderComponent
 {
     public Vector2Int MinCoord;
     public Vector2Int MaxCoord;

@@ -20,6 +20,8 @@ public sealed class EcsStartup : MonoBehaviour {
             .Add(new PeasInitializeSystem(_peaPoolConfig))
             .Add(new PlayerMovementInMazeSystem())
             .Add(new MazePlaceholderSystem())
+            .Add(new GrabItemSystem())
+            .Add(new PeaSystem())
 
 #if UNITY_EDITOR
             .Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem())

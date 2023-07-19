@@ -12,18 +12,21 @@ public enum PlaceholderLayer
 public sealed class MazePlaceholderSystem : IEcsInitSystem, IEcsRunSystem
 {
     private EcsFilter _filter;
-    private EcsPool<MazeRandomPlaceholderComponent> _randomPlaceholderPool;
+    private EcsPool<MazePlaceholderComponent> _randomPlaceholderPool;
     private EcsPool<WorldObjectComponent> _worldObjPool;
+    private EcsPool<MazeCoordComponent> _coordsPool;
+
     private W4Maze _maze;
     private Dictionary<PlaceholderLayer, Grid<int>> _grids = new();
 
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
-        _filter = world.Filter<MazeRandomPlaceholderComponent>().Inc<WorldObjectComponent>().End();
+        _filter = world.Filter<MazePlaceholderComponent>().Inc<WorldObjectComponent>().End();
 
-        _randomPlaceholderPool = world.GetPool<MazeRandomPlaceholderComponent>();
+        _randomPlaceholderPool = world.GetPool<MazePlaceholderComponent>();
         _worldObjPool = world.GetPool<WorldObjectComponent>();
+        _coordsPool = world.GetPool<MazeCoordComponent>();
 
         var mazeFilter = world.Filter<MazeComponent>().End();
 
@@ -40,24 +43,36 @@ public sealed class MazePlaceholderSystem : IEcsInitSystem, IEcsRunSystem
         {
             ref var placeholder = ref _randomPlaceholderPool.Get(i);
             if (placeholder.CanSetPlace == false) continue;
+
             if (_grids.ContainsKey(placeholder.Layer) == false)
             {
                 _grids.Add(placeholder.Layer, new Grid<int>(_maze.ColumnCount, _maze.RowCount));
             }
 
+            var randomCoord = GetRandomCoord(placeholder.MinCoord, placeholder.MaxCoord);
+
+            if (_grids[placeholder.Layer].GetValue(randomCoord.x, randomCoord.y) == 0)
+                _grids[placeholder.Layer].SetValue(randomCoord.x, randomCoord.y, i);
+
+            var pos = _maze.GetCellWorldPosition(randomCoord.x, randomCoord.y);
 
             ref var worldObj = ref _worldObjPool.Get(i);
-            var randomCoordX = Random.Range(placeholder.MinCoord.x, placeholder.MaxCoord.x);
-            var randomCoordY = Random.Range(placeholder.MinCoord.y, placeholder.MaxCoord.y);
+            worldObj.Transform.position = new Vector3(pos.x, 0, pos.y);
 
-            if(_grids[placeholder.Layer].GetValue(randomCoordX, randomCoordY) == 0)
-                _grids[placeholder.Layer].SetValue(randomCoordX, randomCoordY, i);
-
-            worldObj.Transform.position = _maze.GetCellWorldPosition(randomCoordX, randomCoordY);
+            _coordsPool.Add(i);
+            ref var coord = ref _coordsPool.Get(i);
+            coord.Value = randomCoord;
 
             placeholder.CanSetPlace = false;
 
         }
+    }
+
+    private Vector2Int GetRandomCoord(Vector2Int minCoord, Vector2Int maxCoord)
+    {
+        var randomCoordX = Random.Range(minCoord.x, maxCoord.x);
+        var randomCoordY = Random.Range(minCoord.y, maxCoord.y);
+        return new Vector2Int(randomCoordX, randomCoordY);
     }
 }
 

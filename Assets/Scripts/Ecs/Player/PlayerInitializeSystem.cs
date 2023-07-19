@@ -17,16 +17,17 @@ public sealed class PlayerInitializeSystem : IEcsInitSystem
 
         var playerPool = world.GetPool<PlayerComponent>();
         var worldObjPool = world.GetPool<WorldObjectComponent>();
+        var mazeCoord = world.GetPool<MazeCoordComponent>();
 
         var mazePool = world.GetPool<MazeComponent>();
 
         var filter = world.Filter<MazeComponent>().End();
 
-        playerPool.Add(entity);
-        worldObjPool.Add(entity);
+        ref var mazeCoordComponent = ref mazeCoord.Add(entity);
+        mazeCoordComponent.Value = _config.SpawnMazeCoord;
 
-        ref var player = ref playerPool.Get(entity);
-        ref var worldObj = ref worldObjPool.Get(entity);
+        ref var player = ref playerPool.Add(entity);
+        ref var worldObj = ref worldObjPool.Add(entity);
 
         worldObj.Transform = Object.Instantiate(_config.Prefab, Vector3.zero, Quaternion.identity).transform;
         player.Speed = _config.Speed;
