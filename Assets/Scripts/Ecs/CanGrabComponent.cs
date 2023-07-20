@@ -1,3 +1,6 @@
-﻿public struct CanGrabComponent { }
+﻿public struct CanGrabComponent 
+{
+    public bool Value;
+}
 
 

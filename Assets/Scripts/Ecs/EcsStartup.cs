@@ -8,6 +8,10 @@ public sealed class EcsStartup : MonoBehaviour {
     [SerializeField] private MazeViewConfig _mazeViewConfig;
     [SerializeField] private PlayerConfig _playerConfig;
     [SerializeField] private PoolConfig _peaPoolConfig;
+    [SerializeField] private PoolConfig _enemyConfig;
+    [SerializeField] private PeaConfig _peaConfig;
+
+
 
     private void Start() {
         _world = new EcsWorld();
@@ -18,10 +22,14 @@ public sealed class EcsStartup : MonoBehaviour {
             .Add(new MazeVisualizeSystem(_mazeViewConfig))
             .Add(new PlayerInitializeSystem(_playerConfig))
             .Add(new PeasInitializeSystem(_peaPoolConfig))
-            .Add(new PlayerMovementInMazeSystem())
+            .Add(new EnemyInitializeSystem(_enemyConfig))
+            .Add(new PeaCollectSystem(_peaConfig))
             .Add(new MazePlaceholderSystem())
+            .Add(new MovementInMazeSystem())
             .Add(new GrabItemSystem())
-            //.Add(new PeaSystem())
+            .Add(new MazeClearSystem())
+            .Add(new FollowTargetInMazeSystem())
+            .Add(new TimerSystem())
 
 #if UNITY_EDITOR
             .Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem())

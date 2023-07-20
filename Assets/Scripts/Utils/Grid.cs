@@ -19,6 +19,27 @@
         }
     }
 
+    public bool TryGetEmptyCell(out int x, out int y)
+    {
+        x = 0;
+        y = 0;
+        var empty = false;
+        for (int i = 0; i < _width; i++)
+        {
+            for (int j = 0; j < _height; j++)
+            {
+                if (_gridArray[i, j].Equals(default(T)))
+                {
+                    empty = true;
+                    x = i;
+                    y = j;
+                    break;
+                }
+            }
+        }
+        return empty;
+    }
+
     public T GetValue(int x, int y)
     {
         return _gridArray[x, y];

@@ -4,6 +4,10 @@ public abstract class Pool<T> where T : class
 {
     private ObjectPool<T> _objectPool;
 
+    public int CountAll => _objectPool.CountAll;
+    public int CountActive => _objectPool.CountActive;
+    public int CountInactive => _objectPool.CountInactive;
+
     public Pool(PoolConfig config)
     {
         _objectPool = new ObjectPool<T>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, false, config.DefaultCapacity, config.MaxInPool);

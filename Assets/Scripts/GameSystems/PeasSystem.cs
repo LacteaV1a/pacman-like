@@ -10,7 +10,7 @@ public class PeasSystem : GameSystem
     [SerializeField] private PoolConfig _poolConfig;
     private MazePlayer _player;
     private W4Maze _maze;
-    private PeaPool _peaPool;
+    private GameObjectPool _peaPool;
     private Grid<Pea> _peasedGrid;
     private bool _isActive;
     private bool _isInitialized;
@@ -23,7 +23,7 @@ public class PeasSystem : GameSystem
     {
         _player = player;
         _maze = maze;
-        _peaPool = new PeaPool(_poolConfig);
+        _peaPool = new GameObjectPool(_poolConfig);
         _peasedGrid = new Grid<Pea>(maze.ColumnCount, maze.RowCount);
 
         _isInitialized = true;
@@ -44,7 +44,7 @@ public class PeasSystem : GameSystem
         if (pea != null)
         {
             _peasedGrid.SetValue(x, y, null);
-            _peaPool.Release(pea);
+           // _peaPool.Release(pea);
             StartCoroutine(TimerRoutine(_peaConfig.TimeSpawnSec, () => {
                 if(_isActive)
                     SetPea();
@@ -91,13 +91,13 @@ public class PeasSystem : GameSystem
     private void VisualizePeas(int x, int y)
     {
         var pea = _peaPool.Get();
-        _peasedGrid.SetValue(x, y, pea);
+       // _peasedGrid.SetValue(x, y, pea);
 
         var pos = _maze.GetCellWorldPosition(x, y);
 
-        pea.SetPostion(pos.x,pos.y);
-        if (_peas.Contains(pea) == false)
-            _peas.Add(pea);
+        //pea.SetPostion(pos.x,pos.y);
+        //if (_peas.Contains(pea) == false)
+        //    _peas.Add(pea);
     }
 
 
@@ -108,7 +108,7 @@ public class PeasSystem : GameSystem
         _isActive = false;
         foreach (var pea in _peas)
         {
-            _peaPool.Release(pea);
+        //    _peaPool.Release(pea);
         }
 
         _player.Moved -= OnPlayerMoved;

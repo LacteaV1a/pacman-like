@@ -21,7 +21,7 @@ public sealed class PeasInitializeSystem : IEcsInitSystem
         var peaViewPoolEntity = world.NewEntity();
 
         ref var peaViewPoolComponent = ref world.AddComponentToEntity<PeaViewPoolComponent>(peaViewPoolEntity);
-        peaViewPoolComponent.PeaViewPool = new PeaPool(_peaPoolConfig);
+        peaViewPoolComponent.PeaViewPool = new GameObjectPool(_peaPoolConfig);
 
         var filter = world.Filter<MazeComponent>().End();
         Vector2Int mazeSize = Vector2Int.zero;
@@ -39,14 +39,13 @@ public sealed class PeasInitializeSystem : IEcsInitSystem
             peas.Add(entity);
             worldObjs.Add(entity);
             placeHolders.Add(entity);
-            canGrab.Add(entity);
+            ref var canGrabComponet = ref canGrab.Add(entity);
+            canGrabComponet.Value = true;
 
-            ref var peaComponent = ref peas.Get(entity);
-            peaComponent.View = peaViewPoolComponent.PeaViewPool.Get();
-            peaComponent.View.name += i;
 
             ref var worldObjComponent = ref worldObjs.Get(entity);
-            worldObjComponent.Transform = peaComponent.View.transform;
+            worldObjComponent.Transform = peaViewPoolComponent.PeaViewPool.Get().transform;
+            worldObjComponent.Transform.name += i;
 
             ref var placeholderComponent = ref placeHolders.Get(entity);
             placeholderComponent.CanSetPlace = true;

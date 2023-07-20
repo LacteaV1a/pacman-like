@@ -16,6 +16,7 @@ public sealed class PlayerInitializeSystem : IEcsInitSystem
         var entity = world.NewEntity();
 
         var playerPool = world.GetPool<PlayerComponent>();
+        var movementPool = world.GetPool<MovementComponent>();
         var worldObjPool = world.GetPool<WorldObjectComponent>();
         var mazeCoord = world.GetPool<MazeCoordComponent>();
 
@@ -23,14 +24,16 @@ public sealed class PlayerInitializeSystem : IEcsInitSystem
 
         var filter = world.Filter<MazeComponent>().End();
 
+        playerPool.Add(entity);
+
         ref var mazeCoordComponent = ref mazeCoord.Add(entity);
         mazeCoordComponent.Value = _config.SpawnMazeCoord;
 
-        ref var player = ref playerPool.Add(entity);
+        ref var movement = ref movementPool.Add(entity);
         ref var worldObj = ref worldObjPool.Add(entity);
 
         worldObj.Transform = Object.Instantiate(_config.Prefab, Vector3.zero, Quaternion.identity).transform;
-        player.Speed = _config.Speed;
+        movement.Speed = _config.Speed;
 
         foreach (var i in filter)
         {

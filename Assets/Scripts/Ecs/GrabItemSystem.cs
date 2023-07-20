@@ -7,7 +7,7 @@ public sealed class GrabItemSystem : IEcsInitSystem, IEcsRunSystem
     private EcsFilter _playerFilter;
     private EcsPool<MazeCoordComponent> _mazeCoordPool;
     private EcsPool<GrabedMarker> _grabedPool;
-    private int _player;
+    private EcsPool<CanGrabComponent> _canGrabPool;
 
     public void Init(IEcsSystems systems)
     {
@@ -18,22 +18,27 @@ public sealed class GrabItemSystem : IEcsInitSystem, IEcsRunSystem
 
         _mazeCoordPool = world.GetPool<MazeCoordComponent>();
         _grabedPool = world.GetPool<GrabedMarker>();
-        foreach (var item in _playerFilter)
-        {
-            _player = item;
-        }
+        _canGrabPool = world.GetPool<CanGrabComponent>();
     }
 
     public void Run(IEcsSystems systems)
     {
-        ref var playerCoord = ref _mazeCoordPool.Get(_player);
-        foreach (var item in _grabFilter)
+        foreach (var player in _playerFilter)
         {
-            ref var itemCoord = ref _mazeCoordPool.Get(item);
-
-            if (playerCoord.Value == itemCoord.Value && _grabedPool.Has(item) == false)
+            ref var playerCoord = ref _mazeCoordPool.Get(player);
+            foreach (var item in _grabFilter)
             {
-                _grabedPool.Add(item);
+                ref var canGrabComponent = ref _canGrabPool.Get(item);
+                if (canGrabComponent.Value == false) continue;
+
+                ref var itemCoord = ref _mazeCoordPool.Get(item);
+
+                if (playerCoord.Value == itemCoord.Value)
+                {
+                    _grabedPool.Add(item);
+                    ref var canGrab = ref _canGrabPool.Get(item);
+                    canGrab.Value = false;
+                }
             }
         }
     }

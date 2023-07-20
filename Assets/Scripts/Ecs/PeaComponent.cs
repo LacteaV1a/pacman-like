@@ -1,6 +1,6 @@
-﻿public struct PeaComponent
+﻿
+public struct PeaComponent
 {
-    public Pea View;
 }
 
 

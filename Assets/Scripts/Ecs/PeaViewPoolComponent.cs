@@ -1,5 +1,5 @@
 ﻿public struct PeaViewPoolComponent
 {
-    public PeaPool PeaViewPool;
+    public GameObjectPool PeaViewPool;
 }
 
