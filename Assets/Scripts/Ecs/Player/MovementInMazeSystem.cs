@@ -66,28 +66,27 @@ public sealed class MovementInMazeSystem : IEcsInitSystem, IEcsRunSystem
                 if (movement.Direction.x > 0 && cell.RightWall == false)
                 {
                     Move(entity, worldObj.Transform, Vector3.right);
-                    _movedPool.Del(entity);
                 }
 
                 if (movement.Direction.x < 0 && cell.LeftWall == false)
                 {
                     Move(entity, worldObj.Transform, Vector3.left);
-                    _movedPool.Del(entity);
                 }
 
                 if (movement.Direction.y > 0 && cell.TopWall == false)
                 {
                     Move(entity, worldObj.Transform, Vector3.forward);
-                    _movedPool.Del(entity);
                 }
 
                 if (movement.Direction.y < 0 && cell.BotWall == false)
                 {
                     Move(entity, worldObj.Transform, Vector3.back);
-                    _movedPool.Del(entity);
                 }
-
-
+            }
+            else
+            {
+                if(_movedPool.Has(entity))
+                    _movedPool.Del(entity);
             }
         }
     }
