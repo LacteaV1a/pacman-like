@@ -53,22 +53,8 @@ public class MazePathFinder
                 Vector2Int direction = new Vector2Int(Mathf.RoundToInt(neighbor.Position.x - current.Position.x), Mathf.RoundToInt(neighbor.Position.y - current.Position.y));
                 directions.Add(direction);
             }
-
-
         }
-
-
-
         return directions; // Path not found
     }
-
-    private MazeGraphCell GetCellAtPosition(Vector2Int position, MazeGraphCell start)
-    {
-        foreach (MazeGraphCell cell in start.Neighbours)
-        {
-            if (cell.Position == position)
-                return cell;
-        }
-        return start;
-    }
 }
+

@@ -60,38 +60,30 @@ public sealed class FollowTargetInMazeSystem : IEcsInitSystem, IEcsRunSystem
 
             ref var movement = ref _movementPool.Get(entity);
 
-            if (followComp.CurrentPathIndex < followComp.ShortestPathDirection.Count)
-            {
-                Vector2Int currentCell = followComp.ShortestPathDirection[followComp.CurrentPathIndex];
-                movement.Direction = currentCell;
-            }
-
             if (_movedPool.Has(entity))
             {
-                UpdatePath(entity);
+                movement.Direction =  UpdatePath(entity);
             }
+
+
         }
 
     }
 
-    private void UpdatePath(int entity)
+    private Vector2Int UpdatePath(int entity)
     {
         ref var foolowComp = ref _followPool.Get(entity);
         ref var coord = ref _coordPool.Get(entity);
 
-        var targetPos = _mazeGraph.Maze.GetXY(foolowComp.Target);
+        var targetPos = foolowComp.Target;
         var endCell = _mazeGraph.GetGraphCells(targetPos.x, targetPos.y);
 
-        var pos = _mazeGraph.Maze.GetXY(coord.Value);
+        var pos = coord.Value;
         var startCell = _mazeGraph.GetGraphCells(pos.x, pos.y);
 
-        //if (foolowComp.ShortestPathDirection != null && foolowComp.CurrentPathIndex < foolowComp.ShortestPathDirection.Count)
-        //{
-        //    startCell = foolowComp.ShortestPathDirection[foolowComp.CurrentPathIndex];
-        //}
+        var path = _mazePathFinder.FindShortestPathDirection(startCell, endCell);
 
-        foolowComp.ShortestPathDirection = _mazePathFinder.FindShortestPathDirection(startCell, endCell);
+        return path.Count > 0 ? path[0] : Vector2Int.zero;
 
-        foolowComp.CurrentPathIndex = 0;
     }
 }

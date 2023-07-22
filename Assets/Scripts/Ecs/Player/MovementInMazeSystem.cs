@@ -61,6 +61,7 @@ public sealed class MovementInMazeSystem : IEcsInitSystem, IEcsRunSystem
                     _movedPool.Add(entity);
                     ref var coord = ref _mazeCoord.Get(entity);
                     coord.Value = _maze.GetXY(new Vector2(movement.DesiredPosition.x, movement.DesiredPosition.z));
+                    return;
                 }
 
                 if (movement.Direction.x > 0 && cell.RightWall == false)
@@ -97,5 +98,4 @@ public sealed class MovementInMazeSystem : IEcsInitSystem, IEcsRunSystem
         moveComp.DesiredPosition = transform.position + dir * _maze.CellsSize;
     }
 }
-
-
+ 

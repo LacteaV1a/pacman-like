@@ -4,11 +4,13 @@ using UnityEngine;
 public sealed class PeasInitializeSystem : IEcsInitSystem
 {
     private PoolConfig _peaPoolConfig;
+    private GameObjectPool _peaViewPool;
 
     public PeasInitializeSystem(PoolConfig peaPoolConfig)
     {
         _peaPoolConfig = peaPoolConfig;
     }
+
     public void Init(IEcsSystems systems)
     {
         var world = systems.GetWorld();
@@ -21,7 +23,8 @@ public sealed class PeasInitializeSystem : IEcsInitSystem
         var peaViewPoolEntity = world.NewEntity();
 
         ref var peaViewPoolComponent = ref world.AddComponentToEntity<PeaViewPoolComponent>(peaViewPoolEntity);
-        peaViewPoolComponent.PeaViewPool = new GameObjectPool(_peaPoolConfig);
+        _peaViewPool = peaViewPoolComponent.PeaViewPool = new GameObjectPool(_peaPoolConfig);
+       
 
         var filter = world.Filter<MazeComponent>().End();
         Vector2Int mazeSize = Vector2Int.zero;
@@ -32,8 +35,10 @@ public sealed class PeasInitializeSystem : IEcsInitSystem
             mazeSize.x = maze.Maze.ColumnCount;
             mazeSize.y = maze.Maze.RowCount;
         }
+        var cellsCount = mazeSize.x * mazeSize.y;
+        var capacity = _peaPoolConfig.DefaultCapacity <= cellsCount ? _peaPoolConfig.DefaultCapacity : cellsCount;
 
-        for (int i = 0; i < _peaPoolConfig.DefaultCapacity; i++)
+        for (int i = 0; i < capacity; i++)
         {
             var entity = world.NewEntity();
             peas.Add(entity);

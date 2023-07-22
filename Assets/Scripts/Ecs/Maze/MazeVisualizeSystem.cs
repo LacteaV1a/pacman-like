@@ -22,22 +22,37 @@ public class MazeVisualizeSystem : IEcsInitSystem
         var filter = world.Filter<MazeComponent>().End();
 
         var mazeComp = world.GetPool<MazeComponent>();
+        var worldObjPool = world.GetPool<WorldObjectComponent>();
 
 
         foreach (var enttity in filter)
         {
             ref var component = ref mazeComp.Get(enttity);
-            Construct(component.Maze);
+            var mazeGO = Construct(component.Maze);
+
+            if (worldObjPool.Has(enttity) == false)
+            {
+                ref var worldObj = ref worldObjPool.Add(enttity);
+                worldObj.Transform = mazeGO.transform;
+            }
+
         }
     }
 
-    public void Construct(W4Maze maze)
+    public GameObject Construct(W4Maze maze)
     {
         _maze = maze;
         var floor = CreateFloor(maze.ColumnCount, maze.RowCount, _config.Floor, maze.CellsSize);
         floor.transform.position += new Vector3(maze.ColumnCount * 0.5f * maze.CellsSize, 0, maze.RowCount * 0.5f * maze.CellsSize);
 
-        CreateWalls();
+        var walls = CreateWalls();
+
+        var mazeGo = new GameObject("Maze");
+
+        floor.transform.SetParent(mazeGo.transform);
+        walls.transform.SetParent(mazeGo.transform);
+
+        return mazeGo;
     }
 
     private GameObject CreateWalls()

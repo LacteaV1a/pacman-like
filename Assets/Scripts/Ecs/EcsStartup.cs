@@ -1,7 +1,10 @@
 using Leopotam.EcsLite;
+using System;
+using System.Collections;
 using UnityEngine;
 
-public sealed class EcsStartup : MonoBehaviour {
+public sealed class EcsStartup : MonoBehaviour, IStartGameListener, IFinishGameListener
+{
     EcsWorld _world;
     IEcsSystems _systems;
     [SerializeField] private MazeConfig _mazeConfig;
@@ -11,9 +14,13 @@ public sealed class EcsStartup : MonoBehaviour {
     [SerializeField] private PoolConfig _enemyConfig;
     [SerializeField] private PeaConfig _peaConfig;
 
+    [SerializeField] private GameContext _gameContext;
 
+    private bool _start;
 
-    private void Start() {
+    [ContextMenu("Initialize")]
+    private void InitializeEcs()
+    {
         _world = new EcsWorld();
         _systems = new EcsSystems(_world);
         _systems
@@ -25,11 +32,15 @@ public sealed class EcsStartup : MonoBehaviour {
             .Add(new EnemyInitializeSystem(_enemyConfig))
             .Add(new PeaCollectSystem(_peaConfig))
             .Add(new MazePlaceholderSystem())
+            .Add(new FollowTargetInMazeSystem())
             .Add(new MovementInMazeSystem())
             .Add(new GrabItemSystem())
             .Add(new MazeClearSystem())
-            .Add(new FollowTargetInMazeSystem())
+            .Add(new PlayerDamageSystem())
             .Add(new TimerSystem())
+            .Add(new DestroySystem())
+            .Add(new EndGameSystem(_gameContext))
+
 
 #if UNITY_EDITOR
             .Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem())
@@ -38,18 +49,46 @@ public sealed class EcsStartup : MonoBehaviour {
     }
 
     private void Update() {
-        _systems?.Run();
+        if(_start)
+            _systems?.Run();
     }
 
-    private void OnDestroy() {
-        if (_systems != null) {
+    [ContextMenu("Destroy")]
+    private void DestroyEcs()
+    {
+        if (_systems != null)
+        {
             _systems.Destroy();
             _systems = null;
         }
 
-        if (_world != null) {
+        if (_world != null)
+        {
             _world.Destroy();
             _world = null;
         }
     }
+
+    private void OnDestroy() {
+        DestroyEcs();
+    }
+
+    public void OnStartGame()
+    {
+        InitializeEcs();
+        _start = true;
+    }
+
+    public void OnFinishGame()
+    {
+        _start = false;
+        StartCoroutine(ActionNextFrameRoutine(DestroyEcs));
+        //DestroyEcs();
+    }
+    private IEnumerator ActionNextFrameRoutine(Action action)
+    {
+        yield return new WaitForEndOfFrame();
+        action?.Invoke();
+    }
+
 }
